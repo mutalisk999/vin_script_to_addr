@@ -83,7 +83,7 @@ def redeemscript_to_p2sh_address(redeem_script, main_net=True):
     return base58.b58encode(d25)
 
 
-def test():
+def func_test():
     # txid: 620eb162e9b116290df4df7ccc4fb7cb79527a22f9303758ecf6ae65690ae1dd
     # 3HpUR2npzV2pSoVZMqrYVnoRMpBDLKitzX
     print witness_pubkey_to_p2sh_address("02ddff92509af9ef4ad0b73789d2b5a71bfeb8887558bcde1bb74023c119a27db4")
@@ -104,5 +104,5 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+    func_test()
 
