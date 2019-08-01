@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 
-import hashlib
 import base58
+import utils
 
 
 OP_0 = chr(0)
@@ -15,42 +15,19 @@ ADDR_PREFIX_TEST = chr(111)
 SCRIPT_PREFIX_TEST = chr(196)
 
 
-def hash160(data):
-    d32 = hashlib.sha256(data).digest()
-    h = hashlib.new('ripemd160')
-    h.update(d32)
-    d20 = h.digest()
-    return d20
-
-
-def sha256(data):
-    d32 = hashlib.sha256(data).digest()
-    return d32
-
-
-def double_sha256(data):
-    d32 = sha256(sha256(data))
-    return d32
-
-
-def checksum(data):
-    d4 = hashlib.sha256(hashlib.sha256(data).digest()).digest()[0:4]
-    return d4
-
-
 # p2wpkh segwit
 def witness_pubkey_to_p2sh_address(pubkey, main_net=True):
     pubkey = pubkey.decode("hex")
-    d20 = hash160(pubkey)
+    d20 = utils.hash160(pubkey)
     witness_script = OP_0 + chr(len(d20)) + d20
 
     script_prefix = SCRIPT_PREFIX
     if not main_net:
         script_prefix = SCRIPT_PREFIX_TEST
 
-    h20 = hash160(witness_script)
+    h20 = utils.hash160(witness_script)
     d21 = script_prefix + h20
-    c4 = checksum(d21)
+    c4 = utils.checksum(d21)
 
     d25 = d21 + c4
     return base58.b58encode(d25)
@@ -59,16 +36,16 @@ def witness_pubkey_to_p2sh_address(pubkey, main_net=True):
 # p2wsh segwit
 def witness_redeemscript_to_p2sh_address(redeemscript, main_net=True):
     redeemscript = redeemscript.decode("hex")
-    d32 = sha256(redeemscript)
+    d32 = utils.sha256(redeemscript)
     witness_script = OP_0 + chr(len(d32)) + d32
 
     script_prefix = SCRIPT_PREFIX
     if not main_net:
         script_prefix = SCRIPT_PREFIX_TEST
 
-    h20 = hash160(witness_script)
+    h20 = utils.hash160(witness_script)
     d21 = script_prefix + h20
-    c4 = checksum(d21)
+    c4 = utils.checksum(d21)
 
     d25 = d21 + c4
     return base58.b58encode(d25)
@@ -82,9 +59,9 @@ def pubkey_to_legacy_address(pubkey, main_net=True):
     if not main_net:
         addr_prefix = ADDR_PREFIX_TEST
 
-    h20 = hash160(pubkey)
+    h20 = utils.hash160(pubkey)
     d21 = addr_prefix + h20
-    c4 = checksum(d21)
+    c4 = utils.checksum(d21)
 
     d25 = d21 + c4
     return base58.b58encode(d25)
@@ -98,9 +75,9 @@ def redeemscript_to_p2sh_address(redeem_script, main_net=True):
     if not main_net:
         script_prefix = SCRIPT_PREFIX_TEST
 
-    h20 = hash160(redeem_script)
+    h20 = utils.hash160(redeem_script)
     d21 = script_prefix + h20
-    c4 = checksum(d21)
+    c4 = utils.checksum(d21)
 
     d25 = d21 + c4
     return base58.b58encode(d25)
@@ -128,3 +105,4 @@ def test():
 
 if __name__ == "__main__":
     test()
+
