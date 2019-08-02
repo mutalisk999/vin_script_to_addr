@@ -33,11 +33,41 @@ def witness_pubkey_to_p2sh_address(pubkey, main_net=True):
     return base58.b58encode(d25)
 
 
+def witness_p2wphk_script_to_p2sh_address(p2wphk_script, main_net=True):
+    witness_script = p2wphk_script.decode("hex")
+
+    script_prefix = SCRIPT_PREFIX
+    if not main_net:
+        script_prefix = SCRIPT_PREFIX_TEST
+
+    h20 = utils.hash160(witness_script)
+    d21 = script_prefix + h20
+    c4 = utils.checksum(d21)
+
+    d25 = d21 + c4
+    return base58.b58encode(d25)
+
+
 # p2wsh segwit
 def witness_redeemscript_to_p2sh_address(redeemscript, main_net=True):
     redeemscript = redeemscript.decode("hex")
     d32 = utils.sha256(redeemscript)
     witness_script = OP_0 + chr(len(d32)) + d32
+
+    script_prefix = SCRIPT_PREFIX
+    if not main_net:
+        script_prefix = SCRIPT_PREFIX_TEST
+
+    h20 = utils.hash160(witness_script)
+    d21 = script_prefix + h20
+    c4 = utils.checksum(d21)
+
+    d25 = d21 + c4
+    return base58.b58encode(d25)
+
+
+def witness_p2wsh_script_to_p2sh_address(p2wsh_script, main_net=True):
+    witness_script = p2wsh_script.decode("hex")
 
     script_prefix = SCRIPT_PREFIX
     if not main_net:
@@ -84,13 +114,21 @@ def redeemscript_to_p2sh_address(redeem_script, main_net=True):
 
 
 def func_test():
-    # txid:
-    #
+    # txid: 80dd9674beaee5270f8f4bccae31e7d62bb9c303df444def555a3618c32b1f36
+    # MN4zm1U7eMdaawUWFY9mBpkU9ZJef19Yei
     # print witness_pubkey_to_p2sh_address("")
+
+    # txid: 80dd9674beaee5270f8f4bccae31e7d62bb9c303df444def555a3618c32b1f36
+    # MN4zm1U7eMdaawUWFY9mBpkU9ZJef19Yei
+    print witness_p2wphk_script_to_p2sh_address("0014564587ebe95fcc0ee0a188bf10f8b8a76b5fedf3")
 
     # txid:
     #
     # print witness_redeemscript_to_p2sh_address("")
+
+    # txid:
+    #
+    # print witness_p2wsh_script_to_p2sh_address("")
 
     # txid: 307e43a772dd987b07d446b87e17140aa75e2c7820d025c6b48c9a10c842b1fd
     # LdqpyoKnmDnWt2skVnVa1mtHMpRoJyuBNj
