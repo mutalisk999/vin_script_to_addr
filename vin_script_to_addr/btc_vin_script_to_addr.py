@@ -4,15 +4,18 @@
 
 import base58
 import utils
+from bech32 import encode
 
 
 OP_0 = chr(0)
 
 ADDR_PREFIX = chr(0)
 SCRIPT_PREFIX = chr(5)
+BECH32_HRP = "bc"
 
 ADDR_PREFIX_TEST = chr(111)
 SCRIPT_PREFIX_TEST = chr(196)
+BECH32_HRP_TEST = "tb"
 
 
 # p2wpkh segwit
@@ -48,6 +51,30 @@ def witness_p2wphk_script_to_p2sh_address(p2wphk_script, main_net=True):
     return base58.b58encode(d25)
 
 
+def witness_pubkey_to_bech32_address(pubkey, main_net=True):
+    pubkey = pubkey.decode("hex")
+    d20 = utils.hash160(pubkey)
+    witness_script = OP_0 + chr(len(d20)) + d20
+
+    hrp = BECH32_HRP
+    if not main_net:
+        hrp = BECH32_HRP_TEST
+
+    witness_script_bytes = [ord(c) for c in witness_script]
+    return encode(hrp, witness_script_bytes[0], witness_script_bytes[2:])
+
+
+def witness_p2wphk_script_to_bech32_address(p2wphk_script, main_net=True):
+    witness_script = p2wphk_script.decode("hex")
+
+    hrp = BECH32_HRP
+    if not main_net:
+        hrp = BECH32_HRP_TEST
+
+    witness_script_bytes = [ord(c) for c in witness_script]
+    return encode(hrp, witness_script_bytes[0], witness_script_bytes[2:])
+
+
 # p2wsh segwit
 def witness_redeemscript_to_p2sh_address(redeemscript, main_net=True):
     redeemscript = redeemscript.decode("hex")
@@ -79,6 +106,30 @@ def witness_p2wsh_script_to_p2sh_address(p2wsh_script, main_net=True):
 
     d25 = d21 + c4
     return base58.b58encode(d25)
+
+
+def witness_redeemscript_to_bech32_address(redeemscript, main_net=True):
+    redeemscript = redeemscript.decode("hex")
+    d32 = utils.sha256(redeemscript)
+    witness_script = OP_0 + chr(len(d32)) + d32
+
+    hrp = BECH32_HRP
+    if not main_net:
+        hrp = BECH32_HRP_TEST
+
+    witness_script_bytes = [ord(c) for c in witness_script]
+    return encode(hrp, witness_script_bytes[0], witness_script_bytes[2:])
+
+
+def witness_p2wsh_script_to_bech32_address(p2wsh_script, main_net=True):
+    witness_script = p2wsh_script.decode("hex")
+
+    hrp = BECH32_HRP
+    if not main_net:
+        hrp = BECH32_HRP_TEST
+
+    witness_script_bytes = [ord(c) for c in witness_script]
+    return encode(hrp, witness_script_bytes[0], witness_script_bytes[2:])
 
 
 # p2pkh
@@ -122,6 +173,14 @@ def func_test():
     # 3HpUR2npzV2pSoVZMqrYVnoRMpBDLKitzX
     print witness_p2wphk_script_to_p2sh_address("0014bf6e377083d77fa31d171481a0187f609b24ebc3")
 
+    # txid: 620eb162e9b116290df4df7ccc4fb7cb79527a22f9303758ecf6ae65690ae1dd
+    # 3HpUR2npzV2pSoVZMqrYVnoRMpBDLKitzX
+    print witness_pubkey_to_bech32_address("02ddff92509af9ef4ad0b73789d2b5a71bfeb8887558bcde1bb74023c119a27db4")
+
+    # txid: 620eb162e9b116290df4df7ccc4fb7cb79527a22f9303758ecf6ae65690ae1dd
+    # 3HpUR2npzV2pSoVZMqrYVnoRMpBDLKitzX
+    print witness_p2wphk_script_to_bech32_address("0014bf6e377083d77fa31d171481a0187f609b24ebc3")
+
     # txid: 9f64fadd37e2c62380ead74bf8641de67a7795d20f8b63ba62f4cfb490e8b0b8
     # 32BjLfja5eJ25bGCLFj3LVSDr8nB8cadPM
     # bc1qyy30guv6m5ez7ntj0ayr08u23w3k5s8vg3elmxdzlh8a3xskupyqn2lp5w
@@ -132,6 +191,16 @@ def func_test():
     # 32BjLfja5eJ25bGCLFj3LVSDr8nB8cadPM
     # bc1qyy30guv6m5ez7ntj0ayr08u23w3k5s8vg3elmxdzlh8a3xskupyqn2lp5w
     print witness_p2wsh_script_to_p2sh_address("00202122f4719add322f4d727f48379f8a8ba36a40ec4473fd99a2fdcfd89a16e048")
+
+    # txid: 9f64fadd37e2c62380ead74bf8641de67a7795d20f8b63ba62f4cfb490e8b0b8
+    # 32BjLfja5eJ25bGCLFj3LVSDr8nB8cadPM
+    # bc1qyy30guv6m5ez7ntj0ayr08u23w3k5s8vg3elmxdzlh8a3xskupyqn2lp5w
+    print witness_redeemscript_to_bech32_address("5221022dfa322241a4946b9ead36ab9c8c55bd4c4340a1290b5bf71d23a695aeb1240a21034d82610a17c332852205e063c64fee21a77fabc7ac0e6d7ada2a820922c9a5dc2103c96d495bfdd5ba4145e3e046fee45e84a8a48ad05bd8dbb395c011a32cf9f88053ae")
+
+    # txid: 9f64fadd37e2c62380ead74bf8641de67a7795d20f8b63ba62f4cfb490e8b0b8
+    # 32BjLfja5eJ25bGCLFj3LVSDr8nB8cadPM
+    # bc1qyy30guv6m5ez7ntj0ayr08u23w3k5s8vg3elmxdzlh8a3xskupyqn2lp5w
+    print witness_p2wsh_script_to_bech32_address("00202122f4719add322f4d727f48379f8a8ba36a40ec4473fd99a2fdcfd89a16e048")
 
     # txid: 325308822948fbe9beb4d9364b64c0f0938dcc601a09bad92f0aba20ee2b8eff
     # 15bd19ToWr4TY9XsQkTT5rKTafwscZLDud

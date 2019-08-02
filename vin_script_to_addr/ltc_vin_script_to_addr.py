@@ -4,15 +4,18 @@
 
 import base58
 import utils
+from bech32 import encode
 
 
 OP_0 = chr(0)
 
 ADDR_PREFIX = chr(48)
 SCRIPT_PREFIX = chr(50)
+BECH32_HRP = "ltc"
 
 ADDR_PREFIX_TEST = chr(111)
 SCRIPT_PREFIX_TEST = chr(58)
+BECH32_HRP_TEST = "tltc"
 
 
 # p2wpkh segwit
@@ -48,6 +51,30 @@ def witness_p2wphk_script_to_p2sh_address(p2wphk_script, main_net=True):
     return base58.b58encode(d25)
 
 
+def witness_pubkey_to_bech32_address(pubkey, main_net=True):
+    pubkey = pubkey.decode("hex")
+    d20 = utils.hash160(pubkey)
+    witness_script = OP_0 + chr(len(d20)) + d20
+
+    hrp = BECH32_HRP
+    if not main_net:
+        hrp = BECH32_HRP_TEST
+
+    witness_script_bytes = [ord(c) for c in witness_script]
+    return encode(hrp, witness_script_bytes[0], witness_script_bytes[2:])
+
+
+def witness_p2wphk_script_to_bech32_address(p2wphk_script, main_net=True):
+    witness_script = p2wphk_script.decode("hex")
+
+    hrp = BECH32_HRP
+    if not main_net:
+        hrp = BECH32_HRP_TEST
+
+    witness_script_bytes = [ord(c) for c in witness_script]
+    return encode(hrp, witness_script_bytes[0], witness_script_bytes[2:])
+
+
 # p2wsh segwit
 def witness_redeemscript_to_p2sh_address(redeemscript, main_net=True):
     redeemscript = redeemscript.decode("hex")
@@ -79,6 +106,30 @@ def witness_p2wsh_script_to_p2sh_address(p2wsh_script, main_net=True):
 
     d25 = d21 + c4
     return base58.b58encode(d25)
+
+
+def witness_redeemscript_to_bech32_address(redeemscript, main_net=True):
+    redeemscript = redeemscript.decode("hex")
+    d32 = utils.sha256(redeemscript)
+    witness_script = OP_0 + chr(len(d32)) + d32
+
+    hrp = BECH32_HRP
+    if not main_net:
+        hrp = BECH32_HRP_TEST
+
+    witness_script_bytes = [ord(c) for c in witness_script]
+    return encode(hrp, witness_script_bytes[0], witness_script_bytes[2:])
+
+
+def witness_p2wsh_script_to_bech32_address(p2wsh_script, main_net=True):
+    witness_script = p2wsh_script.decode("hex")
+
+    hrp = BECH32_HRP
+    if not main_net:
+        hrp = BECH32_HRP_TEST
+
+    witness_script_bytes = [ord(c) for c in witness_script]
+    return encode(hrp, witness_script_bytes[0], witness_script_bytes[2:])
 
 
 # p2pkh
@@ -122,6 +173,15 @@ def func_test():
     # MN4zm1U7eMdaawUWFY9mBpkU9ZJef19Yei
     print witness_p2wphk_script_to_p2sh_address("0014564587ebe95fcc0ee0a188bf10f8b8a76b5fedf3")
 
+    # txid: 80dd9674beaee5270f8f4bccae31e7d62bb9c303df444def555a3618c32b1f36
+    # MN4zm1U7eMdaawUWFY9mBpkU9ZJef19Yei
+    # print witness_pubkey_to_bech32_address("")
+
+    # txid: 80dd9674beaee5270f8f4bccae31e7d62bb9c303df444def555a3618c32b1f36
+    # ltc1q2ezc06lftlxqac9p3zl3p79c5a44lm0n8hdapw
+    # MN4zm1U7eMdaawUWFY9mBpkU9ZJef19Yei
+    print witness_p2wphk_script_to_bech32_address("0014564587ebe95fcc0ee0a188bf10f8b8a76b5fedf3")
+
     # txid:
     #
     # print witness_redeemscript_to_p2sh_address("")
@@ -129,6 +189,14 @@ def func_test():
     # txid:
     #
     # print witness_p2wsh_script_to_p2sh_address("")
+
+    # txid:
+    #
+    # print witness_redeemscript_to_bech32_address("")
+
+    # txid:
+    #
+    # print witness_p2wsh_script_to_bech32_address("")
 
     # txid: 307e43a772dd987b07d446b87e17140aa75e2c7820d025c6b48c9a10c842b1fd
     # LdqpyoKnmDnWt2skVnVa1mtHMpRoJyuBNj
