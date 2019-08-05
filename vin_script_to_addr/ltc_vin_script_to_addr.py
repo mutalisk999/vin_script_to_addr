@@ -166,16 +166,19 @@ def redeemscript_to_p2sh_address(redeem_script, main_net=True):
 
 def func_test():
     # txid: 80dd9674beaee5270f8f4bccae31e7d62bb9c303df444def555a3618c32b1f36
+    # ltc1q2ezc06lftlxqac9p3zl3p79c5a44lm0n8hdapw
     # MN4zm1U7eMdaawUWFY9mBpkU9ZJef19Yei
-    # print witness_pubkey_to_p2sh_address("")
+    print witness_pubkey_to_p2sh_address("02c86e6ea9a218f45090bfef9c900ac683a5e6afffc8c4b6e191622d974e635301")
 
     # txid: 80dd9674beaee5270f8f4bccae31e7d62bb9c303df444def555a3618c32b1f36
+    # ltc1q2ezc06lftlxqac9p3zl3p79c5a44lm0n8hdapw
     # MN4zm1U7eMdaawUWFY9mBpkU9ZJef19Yei
     print witness_p2wphk_script_to_p2sh_address("0014564587ebe95fcc0ee0a188bf10f8b8a76b5fedf3")
 
     # txid: 80dd9674beaee5270f8f4bccae31e7d62bb9c303df444def555a3618c32b1f36
+    # ltc1q2ezc06lftlxqac9p3zl3p79c5a44lm0n8hdapw
     # MN4zm1U7eMdaawUWFY9mBpkU9ZJef19Yei
-    # print witness_pubkey_to_bech32_address("")
+    print witness_pubkey_to_bech32_address("02c86e6ea9a218f45090bfef9c900ac683a5e6afffc8c4b6e191622d974e635301")
 
     # txid: 80dd9674beaee5270f8f4bccae31e7d62bb9c303df444def555a3618c32b1f36
     # ltc1q2ezc06lftlxqac9p3zl3p79c5a44lm0n8hdapw
