@@ -50,11 +50,11 @@ def redeemscript_to_p2sh_address(redeem_script, main_net=True):
 def func_test():
     # txid: 7410b7ba05f74b876959613bc1392b14300e02e820e5662b61ea756f93c59e83
     # 1BAiH3EgmSvU5T7PZEUswHEpYR3axK7JKA
-    print pubkey_to_legacy_address("")
+    print pubkey_to_legacy_address("0292aa7d5dab35cdc0cdc5b50200fe7dd0282ce1db918dfaf21948530e9122aa43")
 
     # txid: d03443e38780a82398cfae437e9ec8dfed0260a0efcd148aef9e17ab97db045d
-    # 38vuxTHNjtGvA38LKDLn3BUgBZXtFuLdYg
-    print redeemscript_to_p2sh_address("")
+    # 3KDe4JmPWyuESBz1kVZNdXRMNXvSfDJpHj
+    print redeemscript_to_p2sh_address("5221022dcecc3bf8cd9bbdf4493be84081278e4761bcc681434814f932d7fdbb166d5f210358f600a88acce308b9696f928148c93c016215f3946a09f625dc1d4df41cc9a621039680f79b11398b0a2dad2deb19ab48cf20c49c412e2c13063a2078819f9f496553ae")
 
 
 if __name__ == "__main__":
