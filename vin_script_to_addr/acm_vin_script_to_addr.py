@@ -10,11 +10,11 @@ from bech32 import encode
 OP_0 = chr(0)
 
 ADDR_PREFIX = chr(53)
-SCRIPT_PREFIX = chr(5)
+SCRIPT_PREFIX = chr(55)
 BECH32_HRP = "acm"
 
 ADDR_PREFIX_TEST = chr(43)
-SCRIPT_PREFIX_TEST = chr(196)
+SCRIPT_PREFIX_TEST = chr(58)
 BECH32_HRP_TEST = "tacm"
 
 
